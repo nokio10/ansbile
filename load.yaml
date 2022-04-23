@@ -9,6 +9,3 @@
         name: nginx
         state: reloaded
         masked: no
-
-    - name: Check nginx.service status 
-      command: "systemctl is-active nginx"

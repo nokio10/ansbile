@@ -6,6 +6,8 @@
   retries: 10
   until: apt_action is success or ('Failed to lock apt for exclusive operation' not in apt_action.msg and '/var/lib/dpkg/lock' not in apt_action.msg)
   when: ansible_distribution == 'Ubuntu'
+  notify: Reload nginx 
+
 
 - name: Check is ufw installed
   shell: command -v ufw >/dev/null 2>&1
@@ -13,22 +15,16 @@
   ignore_errors: yes
   when: ansible_distribution == 'Ubuntu'
 
+
 - name: Disabling ufw
   command: ufw disable
   become: yes
   when: ansible_distribution == 'Ubuntu' and is_ufw_exist.rc == 0
 
-- name: load mds_pos_prod_proxy.conf
-  copy:
-    src: "{{ repo_path }}/lb/mds_pos_prod_proxy.conf"
-    dest: /etc/nginx/conf.d/mds_pos_prod_proxy.conf
-    owner: root
-    group: root
-    mode: '0644'
 
 - name: load nginx.conf
-  copy:
-    src: "{{ repo_path }}/lb/nginx.conf"
+  template:
+    src: "nginx.conf.j2"
     dest: /etc/nginx/nginx.conf
     owner: root
     group: root
@@ -38,3 +34,7 @@
   command: "nginx -t"
   register: test
  
+
+- name: Check nginx.service status 
+  command: "systemctl is-active nginx"
+  notify: Reload nginx 
