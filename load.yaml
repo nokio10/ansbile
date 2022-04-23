@@ -4,8 +4,8 @@
     - role: roles/load
 
   handlers:
-    - name: Reload nginx 
+    - name: Restart nginx 
       systemd: 
         name: nginx
-        state: reloaded
-        masked: no
+        state: restarted
+        

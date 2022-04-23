@@ -6,7 +6,7 @@
   retries: 10
   until: apt_action is success or ('Failed to lock apt for exclusive operation' not in apt_action.msg and '/var/lib/dpkg/lock' not in apt_action.msg)
   when: ansible_distribution == 'Ubuntu'
-  notify: Reload nginx 
+  notify: Restart nginx 
 
 
 - name: Check is ufw installed
@@ -29,12 +29,9 @@
     owner: root
     group: root
     mode: '0644'
+  notify: Restart nginx
 
 - name: Test nginx.conf
   command: "nginx -t"
   register: test
  
-
-- name: Check nginx.service status 
-  command: "systemctl is-active nginx"
-  notify: Reload nginx 
