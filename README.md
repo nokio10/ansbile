@@ -18,3 +18,6 @@
 ansible-playbook -i inventory/hosts.ini -l cluster load.yaml --key-file=./id_rsa -u root
 ```
 
+Стартовая страница nginx будет доступна на порту 8080 гостевой машины. 
+
+![image](https://user-images.githubusercontent.com/98832702/165351185-0ccaebd5-6fd9-4b5f-8559-2395c9b65156.png)
