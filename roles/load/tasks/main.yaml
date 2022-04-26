@@ -1,26 +1,13 @@
-- name: Install nginx
-  apt:
-    name: nginx-full
+- name: install epel
+  yum:
+    name: epel-release
     state: present
-  register: apt_action
-  retries: 10
-  until: apt_action is success or ('Failed to lock apt for exclusive operation' not in apt_action.msg and '/var/lib/dpkg/lock' not in apt_action.msg)
-  when: ansible_distribution == 'Ubuntu'
-  notify: Restart nginx 
 
-
-- name: Check is ufw installed
-  shell: command -v ufw >/dev/null 2>&1
-  register: is_ufw_exist
-  ignore_errors: yes
-  when: ansible_distribution == 'Ubuntu'
-
-
-- name: Disabling ufw
-  command: ufw disable
-  become: yes
-  when: ansible_distribution == 'Ubuntu' and is_ufw_exist.rc == 0
-
+- name: Install nginx
+  yum:
+    name: nginx
+    state: present
+  notify: Restart nginx
 
 - name: load nginx.conf
   template:
@@ -34,4 +21,3 @@
 - name: Test nginx.conf
   command: "nginx -t"
   register: test
- 
