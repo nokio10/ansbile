@@ -7,8 +7,13 @@
   yum:
     name: nginx
     state: present
-  notify: Restart nginx
-
+  
+- name: nginx systemd
+  systemd:
+    name: nginx
+    enabled: yes
+    state: started
+    
 - name: load nginx.conf
   template:
     src: "nginx.conf.j2"
